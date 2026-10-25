@@ -20,6 +20,7 @@ import type {
   YAxisPropsWithDefaults,
   FrameInputProps,
   ChartPressPanConfig,
+  ChartHoverConfig,
   Viewport,
   GestureHandlerConfig,
   CartesianChartOrientation,
@@ -127,6 +128,17 @@ type CartesianChartBaseProps<
   chartPressConfig?: {
     pan?: ChartPressPanConfig;
   };
+  /**
+   * When enabled, a Hover gesture keeps the first provided `chartPressState`
+   * value updated (and `isActive` true) as the pointer — most commonly a mouse
+   * on web or desktop — moves over the chart. The values deactivate again when
+   * the pointer leaves. Requires `chartPressState` to be provided.
+   */
+  enableHover?: boolean;
+  /**
+   * Optional configuration for the hover gesture which needs `enableHover` to be useful.
+   */
+  chartHoverConfig?: ChartHoverConfig;
   gestureHandlerConfig?: GestureHandlerConfig;
   children: (args: CartesianChartRenderArg<RawData, YK>) => React.ReactNode;
   renderOutside?: (
@@ -295,6 +307,8 @@ function CartesianChartContent<
   domain,
   chartPressState,
   chartPressConfig,
+  enableHover,
+  chartHoverConfig,
   gestureHandlerConfig,
   onChartBoundsChange,
   onScaleChange,
@@ -802,6 +816,65 @@ function CartesianChartContent<
   });
 
   /**
+   * Hover gesture handling:
+   * - Uses Gesture.Hover() to keep the first `chartPressState` value updated (and
+   *    its isActive flag set) as the pointer — e.g. a mouse on web or desktop —
+   *    moves over the chart, without requiring a press.
+   * - Coordinates are inverted through the active chart transform the same way
+   *    press touches are.
+   * - On hover start/end (or finalize), the press values are activated or
+   *    deactivated so tooltips / cursors can hide when the pointer leaves.
+   */
+  const hoverGesture = Gesture.Hover()
+    .onStart((e) => {
+      const v = activePressSharedValues[0];
+      if (!v) return;
+
+      v.isActive.value = true;
+
+      const pointer = getCartesianTouchCoordinates({
+        touch: e,
+        transform: transformState?.matrix.value,
+      });
+
+      handleTouch(v, pointer.x, pointer.y);
+    })
+    .onUpdate((e) => {
+      const v = activePressSharedValues[0];
+      if (!v) return;
+      if (!v.isActive.value) v.isActive.value = true;
+
+      const pointer = getCartesianTouchCoordinates({
+        touch: e,
+        transform: transformState?.matrix.value,
+      });
+
+      handleTouch(v, pointer.x, pointer.y);
+    })
+    /**
+     * While the mouse button is pressed, the hover gesture may stop receiving
+     * move events (e.g. on web) while the pan gesture takes over the stream.
+     * Keep the values activated here so a plain click doesn't "flicker" the
+     * tooltip off before / while the press gesture activates.
+     */
+    .onTouchesDown(() => {
+      const v = activePressSharedValues[0];
+      if (v && !v.isActive.value) v.isActive.value = true;
+    })
+    .onEnd(() => {
+      const v = activePressSharedValues[0];
+      if (v) v.isActive.value = false;
+    })
+    .onFinalize(() => {
+      const v = activePressSharedValues[0];
+      if (v) v.isActive.value = false;
+    });
+
+  if (chartHoverConfig?.activeCursor) {
+    hoverGesture.activeCursor(chartHoverConfig.activeCursor);
+  }
+
+  /**
    * Allow end-user to request "raw-ish" data for a given yKey.
    * Generate this on demand using a proxy.
    */
@@ -1004,6 +1077,11 @@ function CartesianChartContent<
     }
     if (chartPressState) {
       composed = Gesture.Race(composed, panGesture);
+    }
+    // The hover gesture should never compete with press/transform recognition,
+    // so it's composed simultaneously with everything else.
+    if (enableHover && chartPressState) {
+      composed = Gesture.Simultaneous(composed, hoverGesture);
     }
 
     gestureOverlay = (

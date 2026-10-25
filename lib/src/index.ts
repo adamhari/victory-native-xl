@@ -16,6 +16,7 @@ export {
   type Viewport,
   type ChartBounds,
   type ChartPressPanConfig,
+  type ChartHoverConfig,
   type CartesianChartOrientation,
   type YAxisSide,
   type XAxisSide,

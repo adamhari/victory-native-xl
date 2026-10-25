@@ -11,7 +11,7 @@ import type {
   UserSelect,
   TouchAction,
 } from "react-native-gesture-handler/lib/typescript/handlers/gestureHandlerCommon";
-import type { PanGesture } from "./shared/gestureTypes";
+import type { PanGesture, HoverGesture } from "./shared/gestureTypes";
 
 export type PrimitiveViewWindow = {
   xMin: number;
@@ -389,6 +389,14 @@ export type ChartPressPanConfig = {
   failOffsetX?: ExtractParams<PanGesture["failOffsetX"]>;
   failOffsetY?: ExtractParams<PanGesture["failOffsetY"]>;
   simultaneousWithExternalGesture?: ExternalGesture | ExternalGesture[];
+};
+
+export type ChartHoverConfig = {
+  /**
+   * Web/desktop only. Cursor used while the pointer hovers over the chart.
+   * Supports all CSS cursor values (e.g. `"pointer"`, `"crosshair"`).
+   */
+  activeCursor?: Parameters<HoverGesture["activeCursor"]>[number];
 };
 
 export type NonEmptyArray<T> = [T, ...T[]];

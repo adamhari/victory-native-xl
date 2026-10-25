@@ -193,6 +193,12 @@ export const ChartRoutes: ChartRoute[] = [
     path: "/custom-gesture",
   },
   {
+    title: "Hover Gesture",
+    description:
+      "Basic chart example where hovering with the mouse updates the chart press state.",
+    path: "/hover-gesture",
+  },
+  {
     title: "Scroll",
     description: "Show example of scrolling chart data.",
     path: "/scroll",
