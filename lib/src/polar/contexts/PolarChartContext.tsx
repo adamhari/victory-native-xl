@@ -3,6 +3,14 @@ import React, {
   createContext,
   type PropsWithChildren,
 } from "react";
+import type { SharedValue } from "react-native-reanimated";
+import type { PieHoverState } from "../../types";
+
+/**
+ * Chart-space pointer position while the hover gesture is active
+ * (see `enableHover` on `PolarChart`), or `null` when not hovering.
+ */
+export type PolarHoverPointer = { x: number; y: number } | null;
 
 interface PolarChartContext {
   data: Record<string, unknown>[];
@@ -10,6 +18,8 @@ interface PolarChartContext {
   labelKey: string;
   valueKey: string;
   colorKey: string;
+  hoverPointer?: SharedValue<PolarHoverPointer>;
+  hoverState?: PieHoverState;
 }
 
 const PolarChartContext = createContext<PolarChartContext | undefined>(
@@ -22,12 +32,23 @@ interface PolarChartProviderProps {
   labelKey: string;
   valueKey: string;
   colorKey: string;
+  hoverPointer?: SharedValue<PolarHoverPointer>;
+  hoverState?: PieHoverState;
 }
 
 export const PolarChartProvider = (
   props: PropsWithChildren<PolarChartProviderProps>,
 ) => {
-  const { children, data, canvasSize, labelKey, valueKey, colorKey } = props;
+  const {
+    children,
+    data,
+    canvasSize,
+    labelKey,
+    valueKey,
+    colorKey,
+    hoverPointer,
+    hoverState,
+  } = props;
 
   return (
     <PolarChartContext.Provider
@@ -37,6 +58,8 @@ export const PolarChartProvider = (
         labelKey,
         valueKey,
         colorKey,
+        hoverPointer,
+        hoverState,
       }}
     >
       {children}

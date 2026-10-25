@@ -1,5 +1,6 @@
 import * as React from "react";
 import { type Color } from "react-native-skia";
+import { useAnimatedReaction } from "react-native-reanimated";
 import { PieSlice, type PieSliceData } from "./PieSlice";
 import { handleTranslateInnerRadius } from "./utils/innerRadius";
 import { getPieLayout } from "./utils/pieLayout";
@@ -81,6 +82,61 @@ export const PieChart = (props: PieChartProps) => {
     circleSweepDegrees,
     _startAngle,
   ]);
+
+  /**
+   * Hover support (see `enableHover` on `PolarChart`):
+   * The polar chart exposes the raw pointer position while the pointer is over
+   * the chart; here we map that position onto the slice geometry above to
+   * determine the hovered slice index (or -1 when the pointer is outside the
+   * pie / donut, in the hole, or off the chart entirely).
+   */
+  const { hoverPointer, hoverState } = usePolarChartContext();
+  useAnimatedReaction(
+    () => hoverPointer?.value ?? null,
+    (pointer) => {
+      "worklet";
+      if (!hoverState) return;
+
+      if (!pointer) {
+        hoverState.index.value = -1;
+        return;
+      }
+
+      const dx = pointer.x - center.x;
+      const dy = pointer.y - center.y;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+
+      if (dist > radius) {
+        hoverState.index.value = -1;
+        return;
+      }
+
+      let angle = (Math.atan2(dy, dx) * 180) / Math.PI;
+      if (angle < 0) angle += 360;
+      // Pointer angle relative to the chart's start angle, wrapped into
+      // [0, 360) so it can be compared against unwrapped slice angles.
+      let rel = angle - _startAngle;
+      rel = ((rel % 360) + 360) % 360;
+      if (rel > circleSweepDegrees) {
+        hoverState.index.value = -1;
+        return;
+      }
+
+      let hoveredIndex = -1;
+      for (let i = 0; i < data.length; i++) {
+        const slice = data[i];
+        if (!slice) continue;
+        if (dist < slice.innerRadius || dist > slice.radius) continue;
+        const sliceStart = slice.startAngle - _startAngle;
+        if (rel >= sliceStart && rel <= sliceStart + slice.sweepAngle) {
+          hoveredIndex = i;
+          break;
+        }
+      }
+
+      hoverState.index.value = hoveredIndex;
+    },
+  );
 
   return (
     <>

@@ -399,6 +399,15 @@ export type ChartHoverConfig = {
   activeCursor?: Parameters<HoverGesture["activeCursor"]>[number];
 };
 
+/**
+ * Hover state for pie charts.
+ * `index` holds the index of the data point (slice) currently hovered by the
+ * pointer, or `-1` when the pointer is not over any slice.
+ */
+export type PieHoverState = {
+  index: SharedValue<number>;
+};
+
 export type NonEmptyArray<T> = [T, ...T[]];
 
 /**

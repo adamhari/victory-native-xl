@@ -3,8 +3,11 @@ import { ScrollView, StyleSheet, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { LinearGradient, vec } from "react-native-skia";
 import { Pie, PolarChart } from "victory-native";
+import { useDarkMode } from "react-native-dark";
+import { useDerivedValue, useSharedValue } from "react-native-reanimated";
 import { InfoCard } from "example/components/InfoCard";
 import { Button } from "example/components/Button";
+import { AnimatedText } from "../components/AnimatedText";
 import { appColors } from "../consts/colors";
 import { descriptionForRoute } from "../consts/routes";
 
@@ -51,16 +54,60 @@ const DATA = (numberPoints = 5) =>
 export default function DonutChart(props: { segment: string }) {
   const description = descriptionForRoute(props.segment);
   const [data, setData] = useState(DATA(5));
+  /**
+   * `enableHover` on PolarChart tracks the pointer and writes the hovered
+   * slice index into this shared value (-1 when not over any slice).
+   */
+  const hoverIndex = useSharedValue(-1);
+  const isDark = useDarkMode();
+  const hoveredLabel = useDerivedValue(() => {
+    const i = hoverIndex.value;
+    const d = i >= 0 && i < data.length ? data[i] : undefined;
+    return d ? d.label : "Hover the chart!";
+  });
+  const hoveredValue = useDerivedValue(() => {
+    const i = hoverIndex.value;
+    const d = i >= 0 && i < data.length ? data[i] : undefined;
+    return d ? `${d.value} (label ${i + 1})` : "";
+  });
 
   return (
     <SafeAreaView style={styles.safeView}>
       <ScrollView>
+        <AnimatedText
+          text={hoveredLabel}
+          defaultValue="Hover the chart!"
+          style={[
+            styles.readout,
+            {
+              color: isDark ? appColors.text.dark : appColors.text.light,
+              alignSelf: "center",
+              fontSize: 18,
+            },
+          ]}
+        />
+        <AnimatedText
+          text={hoveredValue}
+          defaultValue=""
+          style={[
+            styles.readoutValue,
+            {
+              color: isDark ? appColors.text.dark : appColors.text.light,
+              alignSelf: "center",
+            },
+          ]}
+        />
         <View style={styles.chartContainer}>
           <PolarChart
             data={data}
             colorKey={"color"}
             valueKey={"value"}
             labelKey={"label"}
+            enableHover
+            hoverState={{ index: hoverIndex }}
+            chartHoverConfig={{
+              activeCursor: "pointer",
+            }}
           >
             <Pie.Chart innerRadius={"50%"}>
               {({ slice }) => {
@@ -132,5 +179,12 @@ const styles = StyleSheet.create({
   chartContainer: {
     height: 400,
     padding: 25,
+  },
+  readout: {
+    fontWeight: "bold",
+    paddingTop: 10,
+  },
+  readoutValue: {
+    opacity: 0.75,
   },
 });

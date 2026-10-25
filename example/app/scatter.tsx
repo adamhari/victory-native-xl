@@ -48,6 +48,15 @@ export default function ScatterPage(props: { segment: string }) {
             domainPadding={{ left: 50, right: 50, top: 30 }}
             domain={{ y: [0, 100] }}
             chartPressState={state}
+            /**
+             * `enableHover` wires the Gesture.Hover() to the chart press
+             * state: moving the pointer over the chart updates the state and
+             * its `isActive` flag, and leaving the chart deactivates it again.
+             */
+            enableHover
+            chartHoverConfig={{
+              activeCursor: "crosshair",
+            }}
             axisOptions={{
               font,
               tickCount: 5,

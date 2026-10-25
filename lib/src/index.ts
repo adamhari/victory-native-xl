@@ -17,6 +17,7 @@ export {
   type ChartBounds,
   type ChartPressPanConfig,
   type ChartHoverConfig,
+  type PieHoverState,
   type CartesianChartOrientation,
   type YAxisSide,
   type XAxisSide,

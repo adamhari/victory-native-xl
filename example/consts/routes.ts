@@ -25,7 +25,7 @@ export const ChartRoutes: ChartRoute[] = [
   {
     title: "Bar Chart",
     description:
-      "This is a single Bar chart in Victory that supports customized spacing between each bar as well as pan/zoom.",
+      "This is a single Bar chart in Victory that supports customized spacing between each bar as well as pan/zoom. Hovering with the mouse (enableHover) shows the hovered bar's label and value.",
     path: "/bar-chart",
   },
   {
@@ -88,7 +88,7 @@ export const ChartRoutes: ChartRoute[] = [
   {
     title: "Scatter Plot",
     description:
-      "This is a Scatter plot in Victory Native that supports custom shapes and sizes.",
+      "This is a Scatter plot in Victory Native that supports custom shapes and sizes. Hovering with the mouse (enableHover) shows the hovered point's label.",
     path: "/scatter",
   },
   {
@@ -158,7 +158,7 @@ export const ChartRoutes: ChartRoute[] = [
   {
     title: "Donut Chart",
     description:
-      "This is how to make a Donut chart in Victory. It is built off of the Pie chart using the `innerRadius` prop.",
+      "This is how to make a Donut chart in Victory. It is built off of the Pie chart using the `innerRadius` prop. Hovering with the mouse (enableHover + hoverState) reports the hovered slice.",
     path: "/donut-chart",
   },
   {
