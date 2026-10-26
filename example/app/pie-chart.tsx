@@ -15,8 +15,10 @@ import {
   useChartTransformState,
 } from "victory-native";
 import { useFont } from "react-native-skia";
+import { useDarkMode } from "react-native-dark";
 import {
   useAnimatedReaction,
+  useDerivedValue,
   useSharedValue,
   withTiming,
 } from "react-native-reanimated";
@@ -25,6 +27,7 @@ import { Button } from "example/components/Button";
 import { InputSlider } from "example/components/InputSlider";
 import { InputColor } from "example/components/InputColor";
 import { InputSegment } from "example/components/InputSegment";
+import { AnimatedText } from "../components/AnimatedText";
 import { appColors } from "../consts/colors";
 import { descriptionForRoute } from "../consts/routes";
 import inter from "../assets/inter-medium.ttf";
@@ -58,6 +61,23 @@ export default function PieChart(props: { segment: string }) {
     "simple" | "custom" | "none"
   >("none");
   const { state } = useChartTransformState();
+
+  /**
+   * `enableHover` on PolarChart tracks the pointer and writes the hovered
+   * slice index into this shared value (-1 when not over any slice).
+   */
+  const hoverIndex = useSharedValue(-1);
+  const isDark = useDarkMode();
+  const hoveredLabel = useDerivedValue(() => {
+    const i = hoverIndex.value;
+    const d = i >= 0 && i < data.length ? data[i] : undefined;
+    return d ? d.label : "Hover the chart!";
+  });
+  const hoveredValue = useDerivedValue(() => {
+    const i = hoverIndex.value;
+    const d = i >= 0 && i < data.length ? data[i] : undefined;
+    return d ? `${d.value} (slice ${i + 1})` : "";
+  });
 
   const k = useSharedValue(1);
   const tx = useSharedValue(0);
@@ -94,6 +114,29 @@ export default function PieChart(props: { segment: string }) {
   return (
     <SafeAreaView style={styles.safeView}>
       <ScrollView contentInsetAdjustmentBehavior="automatic">
+        <AnimatedText
+          text={hoveredLabel}
+          defaultValue="Hover the chart!"
+          style={[
+            styles.readout,
+            {
+              color: isDark ? appColors.text.dark : appColors.text.light,
+              alignSelf: "center",
+              fontSize: 18,
+            },
+          ]}
+        />
+        <AnimatedText
+          text={hoveredValue}
+          defaultValue=""
+          style={[
+            styles.readoutValue,
+            {
+              color: isDark ? appColors.text.dark : appColors.text.light,
+              alignSelf: "center",
+            },
+          ]}
+        />
         <View
           style={{
             height: chartHeight,
@@ -105,6 +148,11 @@ export default function PieChart(props: { segment: string }) {
             colorKey={"color"}
             valueKey={"value"}
             labelKey={"label"}
+            enableHover
+            hoverState={{ index: hoverIndex }}
+            chartHoverConfig={{
+              activeCursor: "pointer",
+            }}
           >
             <Pie.Chart>
               {({ slice }) => {
@@ -191,5 +239,12 @@ const styles = StyleSheet.create({
     $dark: {
       backgroundColor: appColors.viewBackground.dark,
     },
+  },
+  readout: {
+    fontWeight: "bold",
+    paddingTop: 10,
+  },
+  readoutValue: {
+    opacity: 0.75,
   },
 });

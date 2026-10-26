@@ -107,6 +107,11 @@ export default function BarGroupWithTooltipPage(props: { segment: string }) {
             labelColor: isDark ? appColors.text.dark : appColors.text.light,
           }}
           chartPressState={state}
+          /**
+           * `enableHover` drives the existing press state with the mouse:
+           * hovering the chart shows the same tooltip press does.
+           */
+          enableHover
           onChartBoundsChange={({ bottom, left }) => {
             setChartBottom(bottom);
             setChartLeft(left);

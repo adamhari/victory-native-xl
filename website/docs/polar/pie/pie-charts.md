@@ -9,6 +9,12 @@ The [example app](https://github.com/FormidableLabs/victory-native-xl/tree/main/
 
 :::
 
+:::info
+
+Hover interactions for `Pie` and `Donut` charts are configured on the `PolarChart` component — see the [`enableHover`](/docs/polar/polar-chart#enablehover) and [`hoverState`](/docs/polar/polar-chart#hoverstate) props, which report the hovered slice index while a mouse hovers over the chart.
+
+:::
+
 ## Example
 
 The example below shows the most basic use of the `Pie.Chart`.

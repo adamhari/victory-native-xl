@@ -242,6 +242,8 @@ The `frame` is an optional prop allows you to configure the frame of the chart. 
 
 The `chartPressState` prop allows you to pass in Reanimated `SharedValue`s that will be used to track the user's "press" gesture on the chart. This is generally used for creating some sort of tooltip/active value indicator. See the [Chart Gestures page](./chart-gestures.mdx) for more in-depth information on how to use this prop.
 
+It is also driven by mouse hovers when the [`enableHover`](#enablehover) prop is enabled — useful on web/desktop where a mouse is available.
+
 The `chartPressState` prop has a type of `ChartPressState | ChartPressState[]`, where `ChartPressState` is an object generated from the `useChartPressState` hook.
 
 :::info
@@ -284,6 +286,46 @@ The `chartPressConfig` prop allows you to configure the pan gesture handler used
 These properties correspond directly to the [React Native Gesture Handler's PanGesture configuration options](https://docs.swmansion.com/react-native-gesture-handler/docs/api/gestures/pan-gesture#configuration).
 
 Explicit `0` values are honored for these options. For example, `activateAfterLongPress: 0` is applied rather than treated as an omitted value.
+
+### `enableHover`
+
+When `true`, the chart builds a [`Gesture.Hover()`](https://docs.swmansion.com/react-native-gesture-handler/docs/gestures/hover-gesture) that drives the first `chartPressState` value: moving the pointer — e.g. a mouse on web or desktop — over the chart updates the active x/y values and positions and sets `isActive` to `true`, and leaving the chart deactivates the state again. This makes it easy to show tooltips, cursors, or readouts while the pointer is over the chart, without requiring a press.
+
+The hover gesture is composed simultaneously with the press and transform gestures, so it does not compete with (or break) existing interactions. On touch-only devices the regular press behavior is unaffected.
+
+```tsx
+import { CartesianChart, useChartPressState } from "victory-native";
+
+function HoveredChart() {
+  const { state, isActive } = useChartPressState({ x: 0, y: { highTmp: 0 } });
+
+  return (
+    <CartesianChart
+      data={DATA}
+      xKey="day"
+      yKeys={["highTmp"]}
+      chartPressState={state}
+      enableHover={true} // 👈 track mouse hovers with the press state
+    >
+      {/* ... */}
+    </CartesianChart>
+  );
+}
+```
+
+### `chartHoverConfig`
+
+Optional configuration for the hover gesture created by `enableHover`. It accepts an object with a single optional property:
+
+- `activeCursor`: the cursor to use while the pointer is over the chart. Supports all CSS cursor values (e.g. `"pointer"`, `"crosshair"`). Web/desktop only.
+
+```tsx
+<CartesianChart
+  // ...
+  enableHover
+  chartHoverConfig={{ activeCursor: "crosshair" }}
+>
+```
 
 ### `transformState`
 
