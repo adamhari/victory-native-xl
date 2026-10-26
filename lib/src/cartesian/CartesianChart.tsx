@@ -654,6 +654,16 @@ function CartesianChartContent<
       TouchData
     >[],
   });
+  /**
+   * Whether the pointer is currently hovering over the chart (see the hover
+   * gesture below). The pan gesture consults this so that a plain click or a
+   * press-drag doesn't wipe out a hover-driven (mouse driven) activation of
+   * the first chartPressState: while the pointer keeps hovering, releasing the
+   * mouse button simply hands control back to the ongoing hover gesture.
+   * On touch devices the hover gesture never activates, so press behavior is
+   * unchanged.
+   */
+  const isPointerHovering = useSharedValue(false);
 
   React.useEffect(() => {
     const vals = chartPressStateRef.current;
@@ -735,9 +745,14 @@ function CartesianChartContent<
      */
     .onFinalize(() => {
       const vals = activePressSharedValues || [];
-      for (const val of vals) {
-        if (val) {
-          val.isActive.value = false;
+      // Only deactivate while the pointer is not hovering, so releasing the
+      // mouse button inside the chart keeps a hover-driven tooltip alive.
+      // See the hover gesture below for how `isPointerHovering` is maintained.
+      if (!isPointerHovering.value) {
+        for (const val of vals) {
+          if (val) {
+            val.isActive.value = false;
+          }
         }
       }
 
@@ -784,11 +799,13 @@ function CartesianChartContent<
       for (const touch of e.changedTouches) {
         const vals = activePressSharedValues || [];
 
-        // Set active state to false
+        // Deactivate the touched value. When the pointer is also hovering
+        // (mouse on web/desktop), leave the value active so releasing the
+        // button hands the tooltip back to the ongoing hover gesture.
         const touchId = touch?.id;
         const idx = typeof touchId === "number" && touchMap.value[touchId];
         const val = typeof idx === "number" && vals[idx];
-        if (val) {
+        if (val && !isPointerHovering.value) {
           val.isActive.value = false;
         }
 
@@ -803,7 +820,7 @@ function CartesianChartContent<
       const vals = activePressSharedValues || [];
       // Set active state to false for all vals
       for (const val of vals) {
-        if (val) {
+        if (val && !isPointerHovering.value) {
           val.isActive.value = false;
         }
       }
@@ -824,9 +841,13 @@ function CartesianChartContent<
    *    press touches are.
    * - On hover start/end (or finalize), the press values are activated or
    *    deactivated so tooltips / cursors can hide when the pointer leaves.
+   * - `isPointerHovering` lets the pan gesture's cleanup hooks (below) know
+   *    that a mouse is still over the chart, so pressing/clicking doesn't
+   *    reset a hover-driven tooltip.
    */
   const hoverGesture = Gesture.Hover()
     .onStart((e) => {
+      isPointerHovering.value = true;
       const v = activePressSharedValues[0];
       if (!v) return;
 
@@ -858,14 +879,17 @@ function CartesianChartContent<
      * tooltip off before / while the press gesture activates.
      */
     .onTouchesDown(() => {
+      isPointerHovering.value = true;
       const v = activePressSharedValues[0];
       if (v && !v.isActive.value) v.isActive.value = true;
     })
     .onEnd(() => {
+      isPointerHovering.value = false;
       const v = activePressSharedValues[0];
       if (v) v.isActive.value = false;
     })
     .onFinalize(() => {
+      isPointerHovering.value = false;
       const v = activePressSharedValues[0];
       if (v) v.isActive.value = false;
     });
