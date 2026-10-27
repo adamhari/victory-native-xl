@@ -32,7 +32,6 @@ const CATEGORY_DATA = [
 
 export default function AxisTitleLayoutPage(props: { segment: string }) {
   const description = descriptionForRoute(props.segment);
-  const font = useFont(inter, 12);
 
   return (
     <SafeAreaView style={styles.safeView}>
@@ -45,13 +44,13 @@ export default function AxisTitleLayoutPage(props: { segment: string }) {
 
         <ChartSection title="Numeric Y Axes">
           <View style={styles.chart}>
-            <NumericYAxisTitleChart font={font} />
+            <NumericYAxisTitleChart />
           </View>
         </ChartSection>
 
         <ChartSection title="Category Y Axes">
           <View style={styles.chart}>
-            <CategoryYAxisTitleChart font={font} />
+            <CategoryYAxisTitleChart />
           </View>
         </ChartSection>
       </ScrollView>
@@ -73,11 +72,11 @@ function ChartSection({
   );
 }
 
-function NumericYAxisTitleChart({
-  font,
-}: {
-  font: ReturnType<typeof useFont>;
-}) {
+function NumericYAxisTitleChart() {
+  // Load the font here rather than receiving it as a prop: under the React
+  // Compiler, an SkFont passed as a prop into a chart wrapper triggers an
+  // infinite render loop on web that crashes the renderer.
+  const font = useFont(inter, 12);
   return (
     <CartesianChart
       data={NUMERIC_DATA}
@@ -144,11 +143,8 @@ function NumericYAxisTitleChart({
   );
 }
 
-function CategoryYAxisTitleChart({
-  font,
-}: {
-  font: ReturnType<typeof useFont>;
-}) {
+function CategoryYAxisTitleChart() {
+  const font = useFont(inter, 12);
   return (
     <CartesianChart
       orientation="horizontal"
