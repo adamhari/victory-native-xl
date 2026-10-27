@@ -32,6 +32,11 @@ const IndividualTouchableBarChart = () => {
     <View style={{ flex: 1 }}>
       <CartesianChart
         chartPressState={state}
+        /**
+         * `enableHover` drives the existing press state with the mouse:
+         * hovering a stack highlights it just like pressing.
+         */
+        enableHover
         xKey="month"
         padding={5}
         yKeys={["favouriteCount", "listenCount", "sales"]}
@@ -99,6 +104,11 @@ const TouchableRowsChart = () => {
     <View style={{ flex: 1 }}>
       <CartesianChart
         chartPressState={state}
+        /**
+         * `enableHover` drives the existing press state with the mouse:
+         * hovering a stack highlights it just like pressing.
+         */
+        enableHover
         xKey="month"
         padding={5}
         yKeys={["favouriteCount", "listenCount", "sales"]}

@@ -176,6 +176,11 @@ export default function ChartRefsExample() {
             },
           }}
           chartPressState={state}
+          /**
+           * `enableHover` drives the existing press state with the mouse:
+           * hovering the chart displays the tooltip just like pressing.
+           */
+          enableHover
         >
           {({ points }) => (
             <>
