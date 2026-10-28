@@ -392,18 +392,11 @@ export type ChartPressPanConfig = {
 };
 
 export type ChartHoverConfig = {
-  /**
-   * Web/desktop only. Cursor used while the pointer hovers over the chart.
-   * Supports all CSS cursor values (e.g. `"pointer"`, `"crosshair"`).
-   */
+  /** Cursor shown while the pointer hovers over the chart. */
   activeCursor?: Parameters<HoverGesture["activeCursor"]>[number];
 };
 
-/**
- * Hover state for pie charts.
- * `index` holds the index of the data point (slice) currently hovered by the
- * pointer, or `-1` when the pointer is not over any slice.
- */
+/** Hover state for pie charts; `index` is the hovered slice, or `-1`. */
 export type PieHoverState = {
   index: SharedValue<number>;
 };

@@ -135,11 +135,6 @@ export default function StockPriceScreen(props: { segment: string }) {
           xKey="date"
           yKeys={["high"]}
           chartPressState={[firstTouch, secondTouch]}
-          /**
-           * Hover drives the FIRST press state only: hovering acts like a
-           * single touch; the range (two-touch) indicators still require
-           * pressing with a second finger.
-           */
           enableHover
           axisOptions={{
             font,

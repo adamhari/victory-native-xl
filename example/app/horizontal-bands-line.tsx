@@ -161,11 +161,6 @@ const AnimatedCircle = ({
   color: string;
 }) => {
   const animatedRadius = useSharedValue(0);
-  /**
-   * React to the active x position on the UI thread (rather than reading the
-   * shared value during render, which wouldn't update without a re-render) so
-   * the highlighted dot follows both press and hover gestures accurately.
-   */
   useAnimatedReaction(
     () => activeXPosition.value === x,
     (isActive, wasActive) => {

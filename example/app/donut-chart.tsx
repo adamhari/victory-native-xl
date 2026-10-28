@@ -54,10 +54,6 @@ const DATA = (numberPoints = 5) =>
 export default function DonutChart(props: { segment: string }) {
   const description = descriptionForRoute(props.segment);
   const [data, setData] = useState(DATA(5));
-  /**
-   * `enableHover` on PolarChart tracks the pointer and writes the hovered
-   * slice index into this shared value (-1 when not over any slice).
-   */
   const hoverIndex = useSharedValue(-1);
   const isDark = useDarkMode();
   const hoveredLabel = useDerivedValue(() => {

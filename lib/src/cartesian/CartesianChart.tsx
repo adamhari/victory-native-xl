@@ -128,16 +128,7 @@ type CartesianChartBaseProps<
   chartPressConfig?: {
     pan?: ChartPressPanConfig;
   };
-  /**
-   * When enabled, a Hover gesture keeps the first provided `chartPressState`
-   * value updated (and `isActive` true) as the pointer — most commonly a mouse
-   * on web or desktop — moves over the chart. The values deactivate again when
-   * the pointer leaves. Requires `chartPressState` to be provided.
-   */
   enableHover?: boolean;
-  /**
-   * Optional configuration for the hover gesture which needs `enableHover` to be useful.
-   */
   chartHoverConfig?: ChartHoverConfig;
   gestureHandlerConfig?: GestureHandlerConfig;
   children: (args: CartesianChartRenderArg<RawData, YK>) => React.ReactNode;
@@ -654,15 +645,8 @@ function CartesianChartContent<
       TouchData
     >[],
   });
-  /**
-   * Whether the pointer is currently hovering over the chart (see the hover
-   * gesture below). The pan gesture consults this so that a plain click or a
-   * press-drag doesn't wipe out a hover-driven (mouse driven) activation of
-   * the first chartPressState: while the pointer keeps hovering, releasing the
-   * mouse button simply hands control back to the ongoing hover gesture.
-   * On touch devices the hover gesture never activates, so press behavior is
-   * unchanged.
-   */
+  /** Pan-press cleanup defers deactivation while this is true,
+   * so a press/click doesn't reset a hover-driven state. */
   const isPointerHovering = useSharedValue(false);
 
   React.useEffect(() => {
@@ -745,9 +729,6 @@ function CartesianChartContent<
      */
     .onFinalize(() => {
       const vals = activePressSharedValues || [];
-      // Only deactivate while the pointer is not hovering, so releasing the
-      // mouse button inside the chart keeps a hover-driven tooltip alive.
-      // See the hover gesture below for how `isPointerHovering` is maintained.
       if (!isPointerHovering.value) {
         for (const val of vals) {
           if (val) {
@@ -799,9 +780,6 @@ function CartesianChartContent<
       for (const touch of e.changedTouches) {
         const vals = activePressSharedValues || [];
 
-        // Deactivate the touched value. When the pointer is also hovering
-        // (mouse on web/desktop), leave the value active so releasing the
-        // button hands the tooltip back to the ongoing hover gesture.
         const touchId = touch?.id;
         const idx = typeof touchId === "number" && touchMap.value[touchId];
         const val = typeof idx === "number" && vals[idx];
@@ -832,12 +810,6 @@ function CartesianChartContent<
     gestureLongPressDelay,
   });
 
-  /**
-   * Hover mirrors press onto the first `chartPressState` value. The
-   * `isPointerHovering` flag lets the pan gesture's cleanup hooks (below) know
-   * a mouse is still over the chart, so a press/click doesn't reset a
-   * hover-driven tooltip.
-   */
   const hoverGesture = Gesture.Hover()
     .onStart((e) => {
       isPointerHovering.value = true;
@@ -865,12 +837,8 @@ function CartesianChartContent<
 
       handleTouch(v, pointer.x, pointer.y);
     })
-    /**
-     * While the mouse button is pressed, the hover gesture may stop receiving
-     * move events (e.g. on web) while the pan gesture takes over the stream.
-     * Keep the values activated here so a plain click doesn't "flicker" the
-     * tooltip off before / while the press gesture activates.
-     */
+    /** Hover may stop receiving move events while pan owns the stream
+     * (e.g. web); stay active so a plain click doesn't flicker the tooltip. */
     .onTouchesDown(() => {
       isPointerHovering.value = true;
       const v = activePressSharedValues[0];
@@ -1095,8 +1063,6 @@ function CartesianChartContent<
     if (chartPressState) {
       composed = Gesture.Race(composed, panGesture);
     }
-    // The hover gesture should never compete with press/transform recognition,
-    // so it's composed simultaneously with everything else.
     if (enableHover && chartPressState) {
       composed = Gesture.Simultaneous(composed, hoverGesture);
     }

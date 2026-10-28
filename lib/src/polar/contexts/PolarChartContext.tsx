@@ -6,10 +6,7 @@ import React, {
 import type { SharedValue } from "react-native-reanimated";
 import type { PieHoverState } from "../../types";
 
-/**
- * Chart-space pointer position while the hover gesture is active
- * (see `enableHover` on `PolarChart`), or `null` when not hovering.
- */
+/** Chart-space pointer position while hovering (`null` otherwise). */
 export type PolarHoverPointer = { x: number; y: number } | null;
 
 interface PolarChartContext {

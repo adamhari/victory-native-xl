@@ -74,11 +74,6 @@ const PolarChartBase = (
     );
   }
 
-  /**
-   * Hover writes the raw (transform-inverted) chart-space pointer position
-   * into `hoverPointer` — `null` on leave — which PieChart consumes via the
-   * polar context to hit-test the hovered slice.
-   */
   const hoverGesture = Gesture.Hover()
     .onStart((e) => {
       hoverPointer.value = getCartesianTouchCoordinates({
@@ -103,7 +98,6 @@ const PolarChartBase = (
     hoverGesture.activeCursor(chartHoverConfig.activeCursor);
   }
 
-  // The hover gesture should never compete with press/transform recognition.
   if (enableHover) {
     composed = Gesture.Simultaneous(composed, hoverGesture);
   }
@@ -144,23 +138,8 @@ type PolarChartProps<
   colorKey: ColorKey;
   labelKey: LabelKey;
   valueKey: ValueKey;
-  /**
-   * Web/desktop only. When enabled, a Hover gesture (see `Gesture.Hover()`
-   * from react-native-gesture-handler) tracks the pointer over the chart and
-   * writes the hovered data point (slice) index into the provided
-   * `hoverState`, or `-1` when the pointer is not over any slice.
-   */
   enableHover?: boolean;
-  /**
-   * A Reanimated shared value object which is populated with the index of the
-   * data point (slice) currently hovered by the pointer (requires
-   * `enableHover`). `-1` means no slice is hovered.
-   */
   hoverState?: PieHoverState;
-  /**
-   * Optional configuration for the hover gesture; requires `enableHover` to
-   * be useful.
-   */
   chartHoverConfig?: ChartHoverConfig;
 } & ChartLayoutModeProps &
   Omit<

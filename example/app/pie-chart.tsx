@@ -62,10 +62,6 @@ export default function PieChart(props: { segment: string }) {
   >("none");
   const { state } = useChartTransformState();
 
-  /**
-   * `enableHover` on PolarChart tracks the pointer and writes the hovered
-   * slice index into this shared value (-1 when not over any slice).
-   */
   const hoverIndex = useSharedValue(-1);
   const isDark = useDarkMode();
   const hoveredLabel = useDerivedValue(() => {
