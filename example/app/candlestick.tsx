@@ -123,10 +123,6 @@ export default function CandlestickPage(props: { segment: string }) {
             padding={{ left: 10, right: 10, top: 20, bottom: 10 }}
             domainPadding={{ left: 18, right: 18, top: 20, bottom: 12 }}
             chartPressState={pressState}
-            /**
-             * `enableHover` drives the existing press state with the mouse:
-             * hovering the chart scrubs the same tooltip press does.
-             */
             enableHover
             xAxis={{
               font,

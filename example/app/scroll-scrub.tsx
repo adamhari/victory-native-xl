@@ -35,10 +35,6 @@ export default function ScrollAndScrub() {
           y: [40, 85],
         }}
         chartPressState={state}
-        /**
-         * `enableHover` drives the existing press state with the mouse:
-         * hovering the chart shows the tooltip just like pressing.
-         */
         enableHover
         transformState={transformState}
       >

@@ -165,9 +165,6 @@ function ChartSection({
 }
 
 function MultilingualHorizontalChart() {
-  // Load the font here rather than receiving it as a prop: under the React
-  // Compiler, an SkFont passed as a prop into a chart wrapper triggers an
-  // infinite render loop on web that crashes the renderer.
   const font = useFont(inter, 12);
   return (
     <CartesianChart

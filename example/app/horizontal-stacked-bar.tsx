@@ -209,9 +209,6 @@ function HorizontalStackedChart({
   roundedCorner: number;
   domain: [number, number];
 }) {
-  // Load the font here rather than receiving it as a prop: under the React
-  // Compiler, an SkFont passed as a prop into a chart wrapper triggers an
-  // infinite render loop on web that crashes the renderer.
   const font = useFont(inter, 12);
   return (
     <CartesianChart
@@ -311,10 +308,6 @@ function TouchableSegmentsChart({
         <CartesianChart
           orientation="horizontal"
           chartPressState={state}
-          /**
-           * `enableHover` drives the existing press state with the mouse:
-           * hovering a segment highlights it just like pressing.
-           */
           enableHover
           chartPressConfig={{ pan: { activateAfterLongPress: 0 } }}
           data={TOUCHABLE_DATA}

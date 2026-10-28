@@ -88,10 +88,6 @@ export default function BarChartCustomBarsPage() {
             </Text>
             <CartesianChart
               chartPressState={state}
-              /**
-               * `enableHover` drives the existing press state with the mouse:
-               * hovering highlights a bar just like pressing.
-               */
               enableHover
               xKey="month"
               padding={5}

@@ -83,13 +83,6 @@ export const PieChart = (props: PieChartProps) => {
     _startAngle,
   ]);
 
-  /**
-   * Hover support (see `enableHover` on `PolarChart`):
-   * The polar chart exposes the raw pointer position while the pointer is over
-   * the chart; here we map that position onto the slice geometry above to
-   * determine the hovered slice index (or -1 when the pointer is outside the
-   * pie / donut, in the hole, or off the chart entirely).
-   */
   const { hoverPointer, hoverState } = usePolarChartContext();
   useAnimatedReaction(
     () => hoverPointer?.value ?? null,

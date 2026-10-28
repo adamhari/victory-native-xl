@@ -173,10 +173,6 @@ export default function HorizontalBarGroupPage(props: { segment: string }) {
               ]}
               frame={{ lineWidth: 0 }}
               chartPressState={press.state}
-              /**
-               * `enableHover` drives the existing press state with the mouse:
-               * hovering a row highlights it just like pressing.
-               */
               enableHover
               chartPressConfig={{ pan: { activateAfterLongPress: 0 } }}
             >
@@ -347,9 +343,6 @@ function ChartSection({
 }
 
 function TooltipPairChart({ axisLabelColor }: { axisLabelColor: string }) {
-  // Load the font here rather than receiving it as a prop: under the React
-  // Compiler, an SkFont passed as a prop into a chart wrapper triggers an
-  // infinite render loop on web that crashes the renderer.
   const font = useFont(inter, 12);
   const [barSize, setBarSize] = React.useState({
     barWidth: 0,
@@ -409,10 +402,6 @@ function TooltipPairChart({ axisLabelColor }: { axisLabelColor: string }) {
           ]}
           frame={{ lineWidth: 0 }}
           chartPressState={state}
-          /**
-           * `enableHover` drives the existing press state with the mouse:
-           * hovering a series highlights it just like pressing.
-           */
           enableHover
           chartPressConfig={{ pan: { activateAfterLongPress: 0 } }}
         >

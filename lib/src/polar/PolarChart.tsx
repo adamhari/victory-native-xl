@@ -75,13 +75,9 @@ const PolarChartBase = (
   }
 
   /**
-   * Hover gesture handling:
-   * - Uses Gesture.Hover() to write the raw chart-space pointer position into
-   *    `hoverPointer` while the pointer is over the chart (and `null` when it
-   *    leaves). Pie charts consume this through the polar chart context to
-   *    hit-test the hovered slice against their own geometry.
-   * - Coordinates are inverted through the active chart transform the same
-   *    way press touches are.
+   * Hover writes the raw (transform-inverted) chart-space pointer position
+   * into `hoverPointer` — `null` on leave — which PieChart consumes via the
+   * polar context to hit-test the hovered slice.
    */
   const hoverGesture = Gesture.Hover()
     .onStart((e) => {

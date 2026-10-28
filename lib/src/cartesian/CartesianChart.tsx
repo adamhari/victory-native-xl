@@ -833,17 +833,10 @@ function CartesianChartContent<
   });
 
   /**
-   * Hover gesture handling:
-   * - Uses Gesture.Hover() to keep the first `chartPressState` value updated (and
-   *    its isActive flag set) as the pointer — e.g. a mouse on web or desktop —
-   *    moves over the chart, without requiring a press.
-   * - Coordinates are inverted through the active chart transform the same way
-   *    press touches are.
-   * - On hover start/end (or finalize), the press values are activated or
-   *    deactivated so tooltips / cursors can hide when the pointer leaves.
-   * - `isPointerHovering` lets the pan gesture's cleanup hooks (below) know
-   *    that a mouse is still over the chart, so pressing/clicking doesn't
-   *    reset a hover-driven tooltip.
+   * Hover mirrors press onto the first `chartPressState` value. The
+   * `isPointerHovering` flag lets the pan gesture's cleanup hooks (below) know
+   * a mouse is still over the chart, so a press/click doesn't reset a
+   * hover-driven tooltip.
    */
   const hoverGesture = Gesture.Hover()
     .onStart((e) => {

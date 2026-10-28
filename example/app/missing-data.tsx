@@ -32,10 +32,6 @@ export default function MissingDataScreen() {
           domain={{ y: [0, 100] }}
           axisOptions={{ font }}
           chartPressState={state}
-          /**
-           * `enableHover` drives the existing press state with the mouse:
-           * hovering the chart shows the tooltip just like pressing.
-           */
           enableHover
         >
           {({ points, chartBounds }) => (

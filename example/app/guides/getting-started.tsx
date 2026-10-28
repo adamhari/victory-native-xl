@@ -32,10 +32,6 @@ export default function GettingStartedScreen(props: { segment: string }) {
             font,
           }}
           chartPressState={state}
-          /**
-           * `enableHover` drives the existing press state with the mouse:
-           * hovering the chart shows the tooltip just like pressing.
-           */
           enableHover
         >
           {({ points }) => (

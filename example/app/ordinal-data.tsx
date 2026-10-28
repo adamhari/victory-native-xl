@@ -47,10 +47,6 @@ export default function OrdinalDataScreen(props: { segment: string }) {
             labelColor: isDark ? appColors.text.dark : appColors.text.light,
           }}
           chartPressState={state}
-          /**
-           * `enableHover` drives the existing press state with the mouse:
-           * hovering the chart moves the highlighted dot just like pressing.
-           */
           enableHover
         >
           {({ chartBounds, points, yScale }) => {
