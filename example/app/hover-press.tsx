@@ -93,7 +93,6 @@ export default function HoverPress(props: { segment: string }) {
           chartHoverConfig={{
             activeCursor: "crosshair",
           }}
-          chartPressConfig={{ pan: { activateAfterLongPress: 0 } }}
           renderOutside={({ chartBounds }) =>
             hoverIsActive ? (
               <HoverCursor

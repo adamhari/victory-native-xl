@@ -210,7 +210,7 @@ export const ChartRoutes: ChartRoute[] = [
   {
     title: "Hover and Press",
     description:
-      "This chart tracks hover and press independently: hoverState renders a crosshair readout following the mouse, while chartPressState pins a dot at the clicked point. Hover matches press automatically when you omit hoverState.",
+      "This chart tracks hover and press independently: hoverState renders a crosshair readout following the mouse, while chartPressState pins a dot where you press and hold (or press-drag). Omitting hoverState makes hover match press automatically.",
     path: "/hover-press",
   },
 ];
