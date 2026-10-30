@@ -207,6 +207,12 @@ export const ChartRoutes: ChartRoute[] = [
     description: "This example demonstrates chart interactions using refs.",
     path: "/chart-refs",
   },
+  {
+    title: "Hover and Press",
+    description:
+      "This chart tracks hover and press independently: hoverState renders a crosshair readout following the mouse, while chartPressState pins a dot at the clicked point. Hover matches press automatically when you omit hoverState.",
+    path: "/hover-press",
+  },
 ];
 
 if (__DEV__) {
