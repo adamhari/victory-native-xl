@@ -99,7 +99,7 @@ Press/click and hover interoperate: while the pointer is over the chart, pressin
 
 ### Hovering cartesian charts
 
-Pass `enableHover` along with a `chartPressState` value: while the pointer is over the chart, the first press state is updated (and its `isActive` flag is set) exactly as if the user was pressing; when the pointer leaves the chart, the state is deactivated again.
+Pass `enableHover` along with a `chartPressState` value: while the pointer is over the chart, the press state values are updated (and their `isActive` flags are set) exactly as if the user was pressing; when the pointer leaves the chart, the states are deactivated again. Because hover drives the press states themselves, no extra setup is needed to make hover match press.
 
 ```tsx
 import * as React from "react";
@@ -184,6 +184,24 @@ function Cursor({
 The example app uses this API in several places — [`example/app/candlestick.tsx`](https://github.com/FormidableLabs/victory-native-xl/tree/main/example/app/candlestick.tsx) scrubs its tooltip on hover, and [`example/app/bar-chart.tsx`](https://github.com/FormidableLabs/victory-native-xl/tree/main/example/app/bar-chart.tsx) additionally shows a hover readout above the chart. Check the "Candlestick Chart" and "Bar Chart" routes of the example.
 
 :::
+
+### Distinct hover and press states
+
+Sharing the press state keeps things simple, but hovering and pressing may need to be tracked independently — e.g. a hover tooltip that follows the mouse while a pressed tooltip stays pinned where the mouse last clicked. Pass a separate `hoverState` (a `ChartPressState` value created with `useChartPressState`, just like `chartPressState`) and the hover gesture will drive it instead of the press states:
+
+```tsx
+const press = useChartPressState({ x: 0, y: { highTmp: 0 } });
+const hover = useChartPressState({ x: 0, y: { highTmp: 0 } });
+
+<CartesianChart
+  // ...
+  chartPressState={press.state}
+  hoverState={hover.state}
+  enableHover // 👈 hovering now updates `hover`, pressing updates `press`
+>
+```
+
+Each state (and its `isActive` shared value) is updated independently, so a "hover is active" readout and a "press is active" indicator can coexist. Pie/donut charts (`PolarChart`) use the same `hoverState` prop.
 
 ## Multi-press support
 
