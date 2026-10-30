@@ -329,6 +329,19 @@ function CartesianChartContent<
   const canvasRef = React.useRef<CanvasRef | null>(null);
   const chartPressStateRef = React.useRef(chartPressState);
   chartPressStateRef.current = chartPressState;
+  // Hover mirrors into the first `chartPressState`, so without one it has
+  // nothing to write to and silently does nothing.
+  React.useEffect(() => {
+    if (
+      enableHover &&
+      !chartPressState &&
+      process.env.NODE_ENV !== "production"
+    ) {
+      console.warn(
+        "CartesianChart: `enableHover` has no effect without `chartPressState`.",
+      );
+    }
+  }, [enableHover, chartPressState]);
   const yKeysKey = yKeys.join("\u0000");
   const normalizedAxisProps = useBuildChartAxis<RawData, XK, YK, never, never>({
     xAxis: xAxis as XAxisInputProps<RawData, XK, never> | undefined,
