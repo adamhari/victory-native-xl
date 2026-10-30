@@ -3,6 +3,7 @@ import { type Color } from "react-native-skia";
 import { useAnimatedReaction } from "react-native-reanimated";
 import { PieSlice, type PieSliceData } from "./PieSlice";
 import { handleTranslateInnerRadius } from "./utils/innerRadius";
+import { getHoveredPieSliceIndex } from "./utils/getHoveredPieSliceIndex";
 import { getPieLayout } from "./utils/pieLayout";
 import { PieSliceProvider } from "./contexts/PieSliceContext";
 import { usePolarChartContext } from "../polar/contexts/PolarChartContext";
@@ -90,44 +91,14 @@ export const PieChart = (props: PieChartProps) => {
       "worklet";
       if (!hoverState) return;
 
-      if (!pointer) {
-        hoverState.index.value = -1;
-        return;
-      }
-
-      const dx = pointer.x - center.x;
-      const dy = pointer.y - center.y;
-      const dist = Math.sqrt(dx * dx + dy * dy);
-
-      if (dist > radius) {
-        hoverState.index.value = -1;
-        return;
-      }
-
-      let angle = (Math.atan2(dy, dx) * 180) / Math.PI;
-      if (angle < 0) angle += 360;
-      // Pointer angle relative to the chart's start angle, wrapped into
-      // [0, 360) so it can be compared against unwrapped slice angles.
-      let rel = angle - _startAngle;
-      rel = ((rel % 360) + 360) % 360;
-      if (rel > circleSweepDegrees) {
-        hoverState.index.value = -1;
-        return;
-      }
-
-      let hoveredIndex = -1;
-      for (let i = 0; i < data.length; i++) {
-        const slice = data[i];
-        if (!slice) continue;
-        if (dist < slice.innerRadius || dist > slice.radius) continue;
-        const sliceStart = slice.startAngle - _startAngle;
-        if (rel >= sliceStart && rel <= sliceStart + slice.sweepAngle) {
-          hoveredIndex = i;
-          break;
-        }
-      }
-
-      hoverState.index.value = hoveredIndex;
+      hoverState.index.value = getHoveredPieSliceIndex({
+        pointer,
+        center,
+        radius,
+        circleSweepDegrees,
+        startAngle: _startAngle,
+        slices: data,
+      });
     },
   );
 
