@@ -16,7 +16,7 @@ interface PolarChartContext {
   valueKey: string;
   colorKey: string;
   hoverPointer?: SharedValue<PolarHoverPointer>;
-  hoverState?: PieHoverState;
+  chartHoverState?: PieHoverState;
 }
 
 const PolarChartContext = createContext<PolarChartContext | undefined>(
@@ -30,7 +30,7 @@ interface PolarChartProviderProps {
   valueKey: string;
   colorKey: string;
   hoverPointer?: SharedValue<PolarHoverPointer>;
-  hoverState?: PieHoverState;
+  chartHoverState?: PieHoverState;
 }
 
 export const PolarChartProvider = (
@@ -44,7 +44,7 @@ export const PolarChartProvider = (
     valueKey,
     colorKey,
     hoverPointer,
-    hoverState,
+    chartHoverState,
   } = props;
 
   return (
@@ -56,7 +56,7 @@ export const PolarChartProvider = (
         valueKey,
         colorKey,
         hoverPointer,
-        hoverState,
+        chartHoverState,
       }}
     >
       {children}

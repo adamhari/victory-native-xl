@@ -100,11 +100,11 @@ When `true` (and `explicitSize` is set), renders a Skia-only subtree with no `Vi
 
 ### `enableHover`
 
-When `true`, the chart builds a [`Gesture.Hover()`](https://docs.swmansion.com/react-native-gesture-handler/docs/gestures/hover-gesture) to track the pointer — e.g. a mouse on web or desktop — as it moves over the chart. The pointer position is written into the chart context (inverted through the active `transformState`, when provided), and consumed through the [`hoverState`](#hoverstate) prop below. This enables hover interactions for `Pie` and `Donut` charts without any extra gesture code.
+When `true`, the chart builds a [`Gesture.Hover()`](https://docs.swmansion.com/react-native-gesture-handler/docs/gestures/hover-gesture) to track the pointer — e.g. a mouse on web or desktop — as it moves over the chart. The pointer position is written into the chart context (inverted through the active `transformState`, when provided), and consumed through the [`chartHoverState`](#charthoverstate) prop below. This enables hover interactions for `Pie` and `Donut` charts without any extra gesture code.
 
 The hover gesture is composed simultaneously with the transform gestures, so it does not compete with (or break) existing interactions.
 
-### `hoverState`
+### `chartHoverState`
 
 A Reanimated shared value object which receives the index of the data point (slice) currently under the pointer, or `-1` when the pointer is over the donut hole, outside the pie, or off the chart entirely. Requires `enableHover`.
 
@@ -139,7 +139,7 @@ function HoveredPie() {
         labelKey={"label"}
         colorKey={"color"}
         enableHover // 👈 track mouse hovers
-        hoverState={{ index: hoverIndex }}
+        chartHoverState={{ index: hoverIndex }}
       >
         <Pie.Chart />
       </PolarChart>
@@ -150,7 +150,7 @@ function HoveredPie() {
 
 :::info
 
-The slice geometry (including each slice's `innerRadius`, start/end angles, values, labels, and colors) is available to `Pie.Chart`'s `children` render prop — combine it with `hoverState` to style or animate the hovered slice.
+The slice geometry (including each slice's `innerRadius`, start/end angles, values, labels, and colors) is available to `Pie.Chart`'s `children` render prop — combine it with `chartHoverState` to style or animate the hovered slice.
 
 :::
 

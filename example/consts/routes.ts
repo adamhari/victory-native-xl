@@ -158,7 +158,7 @@ export const ChartRoutes: ChartRoute[] = [
   {
     title: "Donut Chart",
     description:
-      "This is how to make a Donut chart in Victory. It is built off of the Pie chart using the `innerRadius` prop. Hovering with the mouse (enableHover + hoverState) reports the hovered slice.",
+      "This is how to make a Donut chart in Victory. It is built off of the Pie chart using the `innerRadius` prop. Hovering with the mouse (enableHover + chartHoverState) reports the hovered slice.",
     path: "/donut-chart",
   },
   {
@@ -210,7 +210,7 @@ export const ChartRoutes: ChartRoute[] = [
   {
     title: "Hover and Press",
     description:
-      "This chart tracks hover and press independently: hoverState renders a crosshair readout following the mouse, while chartPressState pins a dot where you press and hold (or press-drag). Omitting hoverState makes hover match press automatically.",
+      "This chart tracks hover and press independently: chartHoverState renders a crosshair readout following the mouse, while chartPressState pins a dot where you press and hold (or press-drag). Omitting chartHoverState makes hover match press automatically.",
     path: "/hover-press",
   },
 ];

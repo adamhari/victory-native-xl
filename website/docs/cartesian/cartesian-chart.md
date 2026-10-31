@@ -242,7 +242,7 @@ The `frame` is an optional prop allows you to configure the frame of the chart. 
 
 The `chartPressState` prop allows you to pass in Reanimated `SharedValue`s that will be used to track the user's "press" gesture on the chart. This is generally used for creating some sort of tooltip/active value indicator. See the [Chart Gestures page](./chart-gestures.mdx) for more in-depth information on how to use this prop.
 
-It is also driven by mouse hovers when the [`enableHover`](#enablehover) prop is enabled — unless a separate [`hoverState`](#hoverstate) prop is provided, in which case only the `hoverState` receives hover updates. This is useful on web/desktop where a mouse is available.
+It is also driven by mouse hovers when the [`enableHover`](#enablehover) prop is enabled — unless a separate [`chartHoverState`](#charthoverstate) prop is provided, in which case only the `chartHoverState` receives hover updates. This is useful on web/desktop where a mouse is available.
 
 The `chartPressState` prop has a type of `ChartPressState | ChartPressState[]`, where `ChartPressState` is an object generated from the `useChartPressState` hook.
 
@@ -254,11 +254,11 @@ If you have a data point whose y-value is `null` or `undefined`, when that point
 When no point is "active" (no press/hover), the gesture state will return `NaN` for `x.value` and the y-values. Use the `isActive` flag to determine whether the state is active.
 :::
 
-### `hoverState`
+### `chartHoverState`
 
 A `ChartPressState` value (or array of them) generated from the `useChartPressState` hook — same type as `chartPressState` — that the hover gesture writes to instead of the press values. Requires [`enableHover`](#enablehover).
 
-Without a `hoverState`, hovering updates the `chartPressState` values themselves, which makes the hover gesture behave exactly like the press gesture with no extra setup. With a `hoverState`, hover and press are tracked independently — e.g. a hover tooltip that follows the mouse while a pressed tooltip stays pinned.
+Without a `chartHoverState`, hovering updates the `chartPressState` values themselves, which makes the hover gesture behave exactly like the press gesture with no extra setup. With a `chartHoverState`, hover and press are tracked independently — e.g. a hover tooltip that follows the mouse while a pressed tooltip stays pinned.
 
 ```tsx
 import { CartesianChart, useChartPressState } from "victory-native";
@@ -272,7 +272,7 @@ return (
     xKey="day"
     yKeys={["highTmp"]}
     chartPressState={press.state}
-    hoverState={hover.state} // 👈 hover and press tracked independently
+    chartHoverState={hover.state} // 👈 hover and press tracked independently
     enableHover={true}
   >
     {/* ... */}
@@ -319,7 +319,7 @@ Explicit `0` values are honored for these options. For example, `activateAfterLo
 
 ### `enableHover`
 
-When `true`, the chart builds a [`Gesture.Hover()`](https://docs.swmansion.com/react-native-gesture-handler/docs/gestures/hover-gesture) that updates the values the hover gesture drives: a [`hoverState`](#hoverstate) when one is provided, otherwise the `chartPressState` values — so hover behaves exactly like a press. Moving the pointer — e.g. a mouse on web or desktop — over the chart updates the active x/y values and positions and sets `isActive` to `true`, and leaving the chart deactivates the state again. This makes it easy to show tooltips, cursors, or readouts while the pointer is over the chart, without requiring a press.
+When `true`, the chart builds a [`Gesture.Hover()`](https://docs.swmansion.com/react-native-gesture-handler/docs/gestures/hover-gesture) that updates the values the hover gesture drives: a [`chartHoverState`](#charthoverstate) when one is provided, otherwise the `chartPressState` values — so hover behaves exactly like a press. Moving the pointer — e.g. a mouse on web or desktop — over the chart updates the active x/y values and positions and sets `isActive` to `true`, and leaving the chart deactivates the state again. This makes it easy to show tooltips, cursors, or readouts while the pointer is over the chart, without requiring a press.
 
 The hover gesture is composed simultaneously with the press and transform gestures, so it does not compete with (or break) existing interactions. On touch-only devices the regular press behavior is unaffected.
 

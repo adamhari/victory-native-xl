@@ -145,7 +145,7 @@ export default function PieChart(props: { segment: string }) {
             valueKey={"value"}
             labelKey={"label"}
             enableHover
-            hoverState={{ index: hoverIndex }}
+            chartHoverState={{ index: hoverIndex }}
             chartHoverConfig={{
               activeCursor: "pointer",
             }}

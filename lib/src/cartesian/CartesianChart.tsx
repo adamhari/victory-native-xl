@@ -126,7 +126,7 @@ type CartesianChartBaseProps<
   chartPressState?:
     | ChartPressState<{ x: InputFields<RawData>[XK]; y: Record<YK, number> }>
     | ChartPressState<{ x: InputFields<RawData>[XK]; y: Record<YK, number> }>[];
-  hoverState?:
+  chartHoverState?:
     | ChartPressState<{ x: InputFields<RawData>[XK]; y: Record<YK, number> }>
     | ChartPressState<{ x: InputFields<RawData>[XK]; y: Record<YK, number> }>[];
   chartPressConfig?: {
@@ -301,7 +301,7 @@ function CartesianChartContent<
   axisOptions,
   domain,
   chartPressState,
-  hoverState,
+  chartHoverState,
   chartPressConfig,
   enableHover,
   chartHoverConfig,
@@ -334,23 +334,23 @@ function CartesianChartContent<
   const canvasRef = React.useRef<CanvasRef | null>(null);
   const chartPressStateRef = React.useRef(chartPressState);
   chartPressStateRef.current = chartPressState;
-  const hoverStateRef = React.useRef(hoverState);
-  hoverStateRef.current = hoverState;
-  // `enableHover` drives either an explicit `hoverState` or the given
+  const chartHoverStateRef = React.useRef(chartHoverState);
+  chartHoverStateRef.current = chartHoverState;
+  // `enableHover` drives either an explicit `chartHoverState` or the given
   // `chartPressState` (so hover matches press without extra setup); with
   // neither it has nothing to write to and silently does nothing.
   React.useEffect(() => {
     if (
       enableHover &&
       !chartPressState &&
-      !hoverState &&
+      !chartHoverState &&
       process.env.NODE_ENV !== "production"
     ) {
       console.warn(
-        "CartesianChart: `enableHover` has no effect without `chartPressState` or `hoverState`.",
+        "CartesianChart: `enableHover` has no effect without `chartPressState` or `chartHoverState`.",
       );
     }
-  }, [enableHover, chartPressState, hoverState]);
+  }, [enableHover, chartPressState, chartHoverState]);
   const yKeysKey = yKeys.join("\u0000");
   const normalizedAxisProps = useBuildChartAxis<RawData, XK, YK, never, never>({
     xAxis: xAxis as XAxisInputProps<RawData, XK, never> | undefined,
@@ -660,17 +660,17 @@ function CartesianChartContent<
   const activePressSharedValues = Array.isArray(chartPressState)
     ? chartPressState
     : [chartPressState];
-  /** Values the hover gesture drives: the explicit `hoverState` when given
+  /** Values the hover gesture drives: the explicit `chartHoverState` when given
    * (keeping hover and press interactions distinct), otherwise the press
    * states so hover matches press with no extra setup. */
   const activeHoverSharedValues =
-    hoverState === undefined
+    chartHoverState === undefined
       ? activePressSharedValues
-      : Array.isArray(hoverState)
-        ? hoverState
-        : [hoverState];
+      : Array.isArray(chartHoverState)
+        ? chartHoverState
+        : [chartHoverState];
   /** True when the hover gesture writes to the press states directly —
-   * either because there is no explicit `hoverState` (hover mirrors press)
+   * either because there is no explicit `chartHoverState` (hover mirrors press)
    * or because the caller passed the same state object to both props. */
   const hoverDrivesPressValues = activePressSharedValues.some(
     (state) => state && activeHoverSharedValues.includes(state),
@@ -690,7 +690,7 @@ function CartesianChartContent<
   React.useEffect(() => {
     const pressVals = chartPressStateRef.current;
     const pressStates = Array.isArray(pressVals) ? pressVals : [pressVals];
-    const hoverVals = hoverStateRef.current;
+    const hoverVals = chartHoverStateRef.current;
     const hoverStates = Array.isArray(hoverVals) ? hoverVals : [hoverVals];
 
     for (const state of [...pressStates, ...hoverStates]) {
@@ -1106,7 +1106,7 @@ function CartesianChartContent<
     if (chartPressState) {
       composed = Gesture.Race(composed, panGesture);
     }
-    if (enableHover && (chartPressState || hoverState)) {
+    if (enableHover && (chartPressState || chartHoverState)) {
       composed = Gesture.Simultaneous(composed, hoverGesture);
     }
 

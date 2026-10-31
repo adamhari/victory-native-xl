@@ -141,7 +141,7 @@ type PolarChartProps<
   labelKey: LabelKey;
   valueKey: ValueKey;
   enableHover?: boolean;
-  hoverState?: PieHoverState;
+  chartHoverState?: PieHoverState;
   chartHoverConfig?: ChartHoverConfig;
 } & ChartLayoutModeProps &
   Omit<
@@ -175,7 +175,7 @@ export const PolarChart = <
   });
 
   const hoverPointer = useSharedValue<PolarHoverPointer>(null);
-  const hoverState = props.hoverState;
+  const chartHoverState = props.chartHoverState;
 
   return (
     <FiberProvider>
@@ -186,7 +186,7 @@ export const PolarChart = <
         valueKey={valueKey.toString()}
         canvasSize={canvasSize}
         hoverPointer={hoverPointer}
-        hoverState={hoverState}
+        chartHoverState={chartHoverState}
       >
         <PolarChartBase
           {...props}

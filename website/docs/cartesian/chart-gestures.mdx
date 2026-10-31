@@ -187,7 +187,7 @@ The example app uses this API in several places — [`example/app/candlestick.ts
 
 ### Distinct hover and press states
 
-Sharing the press state keeps things simple, but hovering and pressing may need to be tracked independently — e.g. a hover tooltip that follows the mouse while a pressed tooltip stays pinned where the mouse last clicked. Pass a separate `hoverState` (a `ChartPressState` value created with `useChartPressState`, just like `chartPressState`) and the hover gesture will drive it instead of the press states:
+Sharing the press state keeps things simple, but hovering and pressing may need to be tracked independently — e.g. a hover tooltip that follows the mouse while a pressed tooltip stays pinned where the mouse last clicked. Pass a separate `chartHoverState` (a `ChartPressState` value created with `useChartPressState`, just like `chartPressState`) and the hover gesture will drive it instead of the press states:
 
 ```tsx
 const press = useChartPressState({ x: 0, y: { highTmp: 0 } });
@@ -196,12 +196,12 @@ const hover = useChartPressState({ x: 0, y: { highTmp: 0 } });
 <CartesianChart
   // ...
   chartPressState={press.state}
-  hoverState={hover.state}
+  chartHoverState={hover.state}
   enableHover // 👈 hovering now updates `hover`, pressing updates `press`
 >
 ```
 
-Each state (and its `isActive` shared value) is updated independently, so a "hover is active" readout and a "press is active" indicator can coexist. Pie/donut charts (`PolarChart`) use the same `hoverState` prop.
+Each state (and its `isActive` shared value) is updated independently, so a "hover is active" readout and a "press is active" indicator can coexist. Pie/donut charts (`PolarChart`) use the same `chartHoverState` prop.
 
 ## Multi-press support
 
