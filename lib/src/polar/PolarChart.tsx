@@ -27,6 +27,7 @@ import {
 } from "../cartesian/utils/transformGestures";
 import { getCartesianTouchCoordinates } from "../cartesian/utils/getCartesianTouchCoordinates";
 import { GestureHandler } from "../shared/GestureHandler";
+import { applyChartHoverConfig } from "../shared/applyChartHoverConfig";
 import { type ChartExplicitSize } from "../shared/ChartExplicitSize";
 import { type ChartLayoutModeProps } from "../shared/ChartLayoutModeProps";
 import { ChartWrapper } from "../shared/ChartWrapper";
@@ -94,9 +95,10 @@ const PolarChartBase = (
       hoverPointer.value = null;
     });
 
-  if (chartHoverConfig?.activeCursor) {
-    hoverGesture.activeCursor(chartHoverConfig.activeCursor);
-  }
+  applyChartHoverConfig({
+    gesture: hoverGesture,
+    hoverConfig: chartHoverConfig,
+  });
 
   if (enableHover) {
     composed = Gesture.Simultaneous(composed, hoverGesture);

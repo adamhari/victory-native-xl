@@ -55,6 +55,7 @@ import {
 } from "./contexts/CartesianTransformContext";
 import { downsampleTicks } from "../utils/tickHelpers";
 import { GestureHandler } from "../shared/GestureHandler";
+import { applyChartHoverConfig } from "../shared/applyChartHoverConfig";
 import type { ComposedGesture } from "../shared/gestureTypes";
 import { type ChartLayoutModeProps } from "../shared/ChartLayoutModeProps";
 import { ChartWrapper } from "../shared/ChartWrapper";
@@ -896,9 +897,10 @@ function CartesianChartContent<
       }
     });
 
-  if (chartHoverConfig?.activeCursor) {
-    hoverGesture.activeCursor(chartHoverConfig.activeCursor);
-  }
+  applyChartHoverConfig({
+    gesture: hoverGesture,
+    hoverConfig: chartHoverConfig,
+  });
 
   /**
    * Allow end-user to request "raw-ish" data for a given yKey.

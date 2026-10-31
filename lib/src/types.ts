@@ -394,6 +394,8 @@ export type ChartPressPanConfig = {
 export type ChartHoverConfig = {
   /** Cursor shown while the pointer hovers over the chart. */
   activeCursor?: Parameters<HoverGesture["activeCursor"]>[number];
+  /** Gestures the hover gesture composes with simultaneously, e.g. custom gestures built outside the chart. */
+  simultaneousWithExternalGesture?: ExternalGesture | ExternalGesture[];
 };
 
 /** Hover state for pie charts; `index` is the hovered slice, or `-1`. */
